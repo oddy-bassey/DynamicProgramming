@@ -2,22 +2,38 @@
 
 // Memoization 
 
-const fibNonOptimized = (n,  memo = {}) => { 
-    if (n <= 2) return 1;
-    return fibNonOptimized(n-1, memo) + fibNonOptimized(n-2, memo);
+/*
+* QUESTION:
+* Say that you're a traveller on a 2D grid. you begin in the
+* top-left corner and your goal is to travel to the bottom-right corner.
+* you may only move down or right.
+*
+* In how many ways can you travel to the goal on a grid wiith dimensions m * n?
+*/
+
+const gridTravelerNotOptimized = (m, n) => {
+  
+    if(m == 1 && n ==1) return 1;
+    if(m == 0 || n == 0) return 0;
+
+    return gridTravelerNotOptimized(m-1, n, memo) + gridTravelerNotOptimized(m, n-1, memo); 
 };
 
-const fibOptimized = (n,  memo = {}) => {
+const gridTravelerOptimized = (m, n, memo = {}) => {
 
-    if(n in memo) return memo[n];
+    const key = m + "," + n;
+    // are the args in the mem
 
-    if (n <= 2) return 1;
-    memo[n] = fibOptimized(n-1, memo) + fibOptimized(n-2, memo);
+    if(key in memo) return memo[key];
+    if(m == 1 && n ==1) return 1;
+    if(m == 0 || n == 0) return 0;
 
-    return memo[n];
+    memo[key] = gridTravelerOptimized(m-1, n, memo) + gridTravelerOptimized(m, n-1, memo);
+
+    return memo[key];
 };
 
-console.log(fibNonOptimized(6));
-console.log(fibOptimized(7));
-console.log(fibOptimized(8)); 
-console.log(fibOptimized(50)); 
+console.log(gridTravelerNotOptimized(1,1));
+console.log(gridTravelerOptimized(2,3));
+console.log(gridTravelerOptimized(3,2));
+console.log(gridTravelerOptimized(18,18));
