@@ -4,36 +4,49 @@
 
 /*
 * QUESTION:
-* Say that you're a traveller on a 2D grid. you begin in the
-* top-left corner and your goal is to travel to the bottom-right corner.
-* you may only move down or right.
-*
-* In how many ways can you travel to the goal on a grid wiith dimensions m * n?
+* Write a function 'canSUm(targetSum, numbers)' that takes in a targetSum
+* and an array of numbers as arguements.
+* 
+* The function should return a boolean indicating whether or not it is possible
+* to generate the targetSum using numbers from the Array.
+* 
+* NOTE
+* You may use an element of the array as many times as needed.
+* you may assume that all input numbers are nonnegative.
 */
+ 
+const canSumNotOptimized = (targetSum, numbers) => {
+    if(targetSum === 0) return true;
+    if(targetSum < 0) return false;
 
-const gridTravelerNotOptimized = (m, n) => {
-  
-    if(m == 1 && n ==1) return 1;
-    if(m == 0 || n == 0) return 0;
+    for(let num of numbers){
+        const remainder = targetSum-num;
+        if(canSumNotOptimized(remainder, numbers) === true) return true;
+    }
 
-    return gridTravelerNotOptimized(m-1, n, memo) + gridTravelerNotOptimized(m, n-1, memo); 
-};
+    return false;
+}
 
-const gridTravelerOptimized = (m, n, memo = {}) => {
+const canSumOptimized = (targetSum, numbers, memo = {}) => {
 
-    const key = m + "," + n;
-    // are the args in the mem
+    if(targetSum in memo) return memo[targetSum];
+    if(targetSum === 0) return true;
+    if(targetSum < 0) return false;
 
-    if(key in memo) return memo[key];
-    if(m == 1 && n ==1) return 1;
-    if(m == 0 || n == 0) return 0;
+    for(let num of numbers){
+        const remainder = targetSum-num;
+        if(canSumOptimized(remainder, numbers, memo) === true){
+            memo[targetSum] = true;
+            return true;
+        }
+    }
 
-    memo[key] = gridTravelerOptimized(m-1, n, memo) + gridTravelerOptimized(m, n-1, memo);
+    memo[targetSum] = false;
+    return false;
+}
 
-    return memo[key];
-};
-
-console.log(gridTravelerNotOptimized(1,1));
-console.log(gridTravelerOptimized(2,3));
-console.log(gridTravelerOptimized(3,2));
-console.log(gridTravelerOptimized(18,18));
+console.log(canSumNotOptimized(7, [2,3]));
+console.log(canSumNotOptimized(7, [5,3, 4, 7]));
+console.log(canSumNotOptimized(7, [2,4]));
+console.log(canSumNotOptimized(8, [2,3, 5]));
+console.log(canSumOptimized(300, [7,14]));
